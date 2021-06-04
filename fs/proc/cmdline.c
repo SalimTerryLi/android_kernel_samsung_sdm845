@@ -3,6 +3,7 @@
 #include <linux/proc_fs.h>
 #include <linux/seq_file.h>
 #include <asm/setup.h>
+#include <asm/io.h>
 
 static char updated_command_line[COMMAND_LINE_SIZE];
 
@@ -26,9 +27,10 @@ static const struct file_operations cmdline_proc_fops = {
 
 static void proc_cmdline_set(char *name, char *value)
 {
-	char flag_str[COMMAND_LINE_SIZE];
+	static char flag_str[COMMAND_LINE_SIZE];
 	char *flag_substr;
 	char *flag_space_substr;
+	memset(flag_str, 0, sizeof(flag_str));
  	scnprintf(flag_str, COMMAND_LINE_SIZE, "%s=", name);
 	flag_substr = strstr(updated_command_line, flag_str);
  	if (flag_substr) {
